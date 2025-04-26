@@ -65,7 +65,7 @@ TO DO LIST/
 1. **Clone the Repository**
    ```bash
    git clone https://github.com/arjuntanil/To-Do-List.git
-   cd ANY.DO
+   cd to_do_list
    ```
 
 2. **Create a Virtual Environment**
