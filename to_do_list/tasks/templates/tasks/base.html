@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>ANY.DO</title>
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background-color: #6666cc; /* Correct violet color */
+            padding: 15px 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Move the logo to the left */
+        .navbar-logo {
+            flex: 1;
+        }
+
+        .navbar-logo a {
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .navbar-menu {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+            gap: 20px;
+        }
+
+        .navbar-menu li {
+            font-size: 16px;
+        }
+
+        .navbar-menu a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-menu a:hover {
+            color: #f8f9fa;
+        }
+
+        .navbar-menu .active a {
+            border-bottom: 2px solid #f8f9fa;
+            padding-bottom: 5px;
+        }
+
+        .navbar-menu a.login, .navbar-menu a.logout {
+            font-weight: bold;
+        }
+
+        /* Main Content */
+        main {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: #6610f2; /* Correct violet color */
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <!-- Logo -->
+            <div class="navbar-logo">
+                <a href="{% url 'index' %}" class="logo">
+                    <h1>Any.do</h1>
+                </a>
+            </div>
+
+            <!-- Menu -->
+            <ul class="navbar-menu">
+                <li><a href="{% url 'index' %}" class="nav-link">Home</a></li>
+                <li><a href="{% url 'create_task' %}" class="nav-link">Create Task</a></li>
+                <li><a href="{% url 'completed_tasks' %}" class="nav-link">Completed Tasks</a></li>
+                <li><a href="{% url 'todo_tasks' %}" class="nav-link">To-Do</a></li>
+                <li><a href="{% url 'profile' %}" class="nav-link">Profile</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'logout' %}" class="logout">Logout</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}" class="login">Login</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}
+        <!-- Page content will go here -->
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div>
+            <p>&copy; 2024 Any.do | All Rights Reserved</p>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,187 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <title>ANY.DO</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+  <!-- Additional CSS Files -->
+  <link href="{% static 'assets/css/fontawesome.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/css/templatemo-scholar.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/css/owl.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/css/animate.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+</head>
+
+<body>
+
+  <!-- ***** Preloader Start ***** -->
+  <div id="js-preloader" class="js-preloader">
+    <div class="preloader-inner">
+      <span class="dot"></span>
+      <div class="dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </div>
+  <!-- ***** Preloader End ***** -->
+
+  <!-- ***** Header Area Start ***** -->
+  <header class="header-area header-sticky">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <nav class="main-nav">
+            <!-- ***** Logo Start ***** -->
+            <a href="{% url 'index' %}" class="logo">
+                <h1>Any.do</h1>
+            </a>
+
+            <ul class="nav">
+              <li><a href="{% url 'create_task' %}">Create Task</a></li>
+              <li><a href="{% url 'completed_tasks' %}">Completed Tasks</a></li>
+              <li><a href="{% url 'todo_tasks' %}">To-Do</a></li>
+              <li><a href="{% url 'profile' %}">Profile</a></li>
+              {% if user.is_authenticated %}
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+              {% else %}
+                <li><a href="{% url 'login' %}">Login</a></li>
+              {% endif %}
+            </ul>
+            <a class='menu-trigger'>
+              <span>Menu</span>
+            </a>
+            
+          </nav>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  <div class="main-banner" id="top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="owl-carousel owl-banner">
+            <div class="item item-1">
+              <div class="header-text">
+                <span class="category">Organize Your Tasks</span>
+                <h2>Stay Productive with Every Task You Create</h2>
+                <p>Our to-do list app helps you track your tasks, stay on top of deadlines, and improve your daily productivity with ease. Whether it's personal or work-related, managing tasks has never been this efficient.</p>
+              </div>
+            </div>
+            <div class="item item-2">
+              <div class="header-text">
+                <span class="category">Manage Your Day</span>
+                <h2>Simple, Effective Task Management</h2>
+                <p>Keep your day organized by creating, updating, and tracking tasks all in one place. Our to-do list app ensures you stay focused and organized with its intuitive design and features.</p>
+              </div>
+            </div>
+            <div class="item item-3">
+              <div class="header-text">
+                <span class="category">Task at Your Fingertips</span>
+                <h2>Effortless Task Creation and Tracking</h2>
+                <p>Creating tasks, checking off completed ones, and staying on schedule has never been easier. Organize your tasks and boost your efficiency with our simple and user-friendly interface.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="contact-us section" id="contact">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 align-self-center">
+          <div class="section-heading">
+            <h6>Contact Us</h6>
+            <h2>Feel free to contact us anytime</h2>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="contact-us-content">
+            <form id="contact-form" action="" method="post">
+              <div class="row">
+                <div class="col-lg-12">
+                  <fieldset>
+                    <input type="name" name="name" id="name" placeholder="Your Name..." autocomplete="on" required>
+                  </fieldset>
+                </div>
+                <div class="col-lg-12">
+                  <fieldset>
+                    <input type="text" name="email" id="email" pattern="[^ @]*@[^ @]*" placeholder="Your E-mail..." required />
+                  </fieldset>
+                </div>
+                <div class="col-lg-12">
+                  <fieldset>
+                    <textarea name="message" id="message" placeholder="Your Message"></textarea>
+                  </fieldset>
+                </div>
+                <div class="col-lg-12">
+                  <fieldset>
+                    <button type="submit" id="form-submit" class="orange-button">Send Message Now</button>
+                  </fieldset>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="col-lg-12">
+        <p>Copyright © Any.Do, All rights reserved. &nbsp;&nbsp;&nbsp; Design: <a href="" rel="nofollow" target="_blank">Robins</a></p>
+      </div>
+    </div>
+  </footer>
+  <script>
+  
+  const loginUrl = "{% url 'login' %}";
+  const logoutUrl = "{% url 'logout' %}";
+  
+  function toggleLoginLogout() {
+    let loginLink = document.getElementById('login-link');
+    
+    if ("{{ user.is_authenticated }}" === "True") {
+      
+      window.location.href = logoutUrl;
+    } else {
+    
+      window.location.href = loginUrl;
+    }
+  }
+
+  
+  window.onload = function () {
+    let loginLink = document.getElementById('login-link');
+    if ("{{ user.is_authenticated }}" === "True") {
+      
+      loginLink.textContent = 'Logout';
+    } else {
+      
+      loginLink.textContent = 'Login';
+    }
+  }
+</script>
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'assets/js/isotope.min.js' %}"></script>
+  <script src="{% static 'assets/js/owl-carousel.js' %}"></script>
+  <script src="{% static 'assets/js/counter.js' %}"></script>
+  <script src="{% static 'assets/js/custom.js' %}"></script>
+
+</body>
+</html>

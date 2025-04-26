@@ -1,0 +1,163 @@
+{% extends 'tasks/base.html' %}
+{% load static %}
+{% block content %}
+<body style="background-image: url('{% static 'assets/images/banner-item-03.jpg' %}'); background-size: cover; background-position: center; background-attachment: fixed;">
+    <div style="max-width: 800px; margin: auto; padding: 20px; font-family: 'Poppins', Arial, sans-serif;">
+        <div style="max-width: 800px; margin: auto; padding: 20px; font-family: Arial, sans-serif; background-color: #f9f9f9; border-radius: 10px;">
+            <h2 style="text-align: center; color: #333; margin-bottom: 20px;">To-Do Tasks</h2>
+            <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 20px;">
+                {% for task in tasks %}
+                    <div style="background-color: #fff; border-radius: 10px; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); width: 48%; padding: 20px; transition: transform 0.3s;">
+                        <h4 style="color: #333; font-size: 1.3em; font-weight: bold;">{{ task.title }}</h4>
+                        <p style="color: #f39c12; font-weight: bold; margin-bottom: 10px;">Status: {{ task.status|title }}</p>
+                        
+                        <div style="font-size: 1.1em; font-weight: bold; color: #2c3e50; margin-bottom: 10px;">
+                            Task Description:
+                        </div>
+                        <div style="margin-bottom: 15px; font-size: 1em; color: #7f8c8d;">
+                            {% for line in task.description.splitlines %}
+                                <label style="display: block; margin-bottom: 5px; font-size: 1rem;">
+                                    <input type="checkbox" style="margin-right: 10px;">
+                                    {{ line }}
+                                </label>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Delete Button -->
+                        <a href="{% url 'delete_task' task.id %}" style="color: #e74c3c; font-weight: bold; text-decoration: none; margin-top: 10px; display: inline-block; transition: color 0.3s;">
+                            🗑️ Delete Task
+                        </a>
+
+                        <!-- Edit Button -->
+                        <button onclick="openEditModal({{ task.id }}, '{{ task.title }}', '{{ task.description }}', '{{ task.status }}')" 
+                                style="background-color: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; display: inline-block; margin-top: 10px; transition: background-color 0.3s;">
+                            Edit Task
+                        </button>
+
+                        <!-- Mark as Completed Button -->
+                        <a href="{% url 'update_task_status' task.id %}" style="background-color: #27ae60; color: white; font-weight: bold; text-decoration: none; padding: 10px 20px; border-radius: 5px; margin-top: 10px; display: inline-block; transition: background-color 0.3s;">
+                            ✔️ Mark as Completed
+                        </a>
+                    </div>
+                {% empty %}
+                    <p style="text-align: center; color: #888;">No to-do tasks available.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Task Modal -->
+    <div id="editTaskModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); border-radius: 8px; z-index: 1000; width: 400px;">
+        <h3>Edit Task</h3>
+        <form id="editTaskForm" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="task_id" id="task_id">
+
+            <label for="edit_title" style="font-weight: bold;">Title:</label>
+            <input type="text" name="title" id="edit_title" required style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #ddd;">
+
+            <label for="edit_description" style="font-weight: bold;">Description:</label>
+            <textarea name="description" id="edit_description" required style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #ddd;"></textarea>
+
+            <label for="edit_status" style="font-weight: bold;">Status:</label>
+            <select name="status" id="edit_status" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #ddd;">
+                <option value="todo">To-Do</option>
+                <option value="completed">Completed</option>
+            </select>
+
+            <button type="submit" style="background-color: #3498db; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%;">Save Changes</button>
+            <button type="button" onclick="closeEditModal()" style="background-color: #e74c3c; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px;">Cancel</button>
+        </form>
+    </div>
+
+    <!-- Overlay Background for Modal -->
+    <div id="modalOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;" onclick="closeEditModal()"></div>
+
+    <!-- Data Attribute for Edit URL -->
+    <body data-edit-url="{% url 'edit_task' task_id=0 %}">
+
+    <script>
+        function openEditModal(taskId, title, description, status) {
+            // Set the hidden input value for task_id
+            document.getElementById('task_id').value = taskId;
+
+            // Get the URL from the data attribute in the body
+            let baseUrl = document.body.getAttribute('data-edit-url');
+
+            // Replace the placeholder task_id in the URL with the actual task ID
+            let formActionUrl = baseUrl.replace('0', taskId);
+
+            // Update the form's action URL dynamically
+            document.getElementById('editTaskForm').action = formActionUrl;
+
+            // Populate the form fields with the task details
+            document.getElementById('edit_title').value = title;
+            document.getElementById('edit_description').value = description;
+            document.getElementById('edit_status').value = status;
+
+            // Show the modal and overlay
+            document.getElementById('editTaskModal').style.display = 'block';
+            document.getElementById('modalOverlay').style.display = 'block';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editTaskModal').style.display = 'none';
+            document.getElementById('modalOverlay').style.display = 'none';
+        }
+    </script>
+
+    <style>
+        /* General container styling */
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Task Card Styles */
+        div[style*="box-shadow"] {
+            position: relative;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        div[style*="box-shadow"]:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Delete Button */
+        a[href*="delete_task"] {
+            background-color: #e74c3c;
+            color: #fff;
+        }
+
+        a[href*="delete_task"]:hover {
+            background-color: #c0392b;
+        }
+
+        /* Edit Task Button */
+        button {
+            background-color: #3498db;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Modal and Overlay Styles */
+        #modalOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+    </style>
+</body>
+{% endblock %}

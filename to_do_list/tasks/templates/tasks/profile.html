@@ -1,0 +1,50 @@
+{% extends 'tasks/base.html' %}
+
+{% block content %}
+<div style="background-color: indigo; padding: 20px; min-height: 100vh; color: white;">
+    <div style="max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 10px; color: black; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
+        <div style="text-align: center;">
+            <img src="{{ user.profile.photo.url|default:'/static/images/default-profile.png' }}" 
+                 alt="Profile Picture" 
+                 style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid indigo; margin-bottom: 20px;">
+        </div>
+        
+        <h2 style="text-align: center; color: indigo; margin-bottom: 20px;">{{ user.username|title }}</h2>
+        
+        <!-- Editable Profile Form -->
+        <form method="post" enctype="multipart/form-data" action="{% url 'update_profile' %}">
+            {% csrf_token %}
+            
+            <label for="username" style="font-weight: bold; color: indigo;">Username:</label>
+            <input type="text" id="username" name="username" value="{{ user.username }}" 
+                   required pattern="^[a-zA-Z0-9_.-]{3,}$"
+                   title="Username should be at least 3 characters long and can include letters, numbers, and underscores."
+                   style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #ddd;">
+            
+            <label for="email" style="font-weight: bold; color: indigo;">Email:</label>
+            <input type="email" id="email" name="email" value="{{ user.email }}" 
+                   required
+                   style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #ddd;">
+            
+            <label for="mobile_number" style="font-weight: bold; color: indigo;">Mobile Number:</label>
+            <input type="text" id="mobile_number" name="mobile_number" value="{{ user.profile.mobile_number|default:'' }}" 
+                   required pattern="^\d{10}$"
+                   title="Mobile number must be a 10-digit number."
+                   style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #ddd;">
+            
+            <label for="address" style="font-weight: bold; color: indigo;">Address:</label>
+            <textarea id="address" name="address" rows="4"
+                      style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #ddd;">{{ user.profile.address|default:'' }}</textarea>
+            
+            <label for="photo" style="font-weight: bold; color: indigo;">Profile Picture:</label>
+            <input type="file" id="photo" name="photo" 
+                   style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #ddd;">
+            
+            <button type="submit" 
+                    style="background-color: indigo; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 20px;">
+                Update Profile
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

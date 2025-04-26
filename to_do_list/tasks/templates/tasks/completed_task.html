@@ -1,0 +1,78 @@
+{% extends 'tasks/base.html' %}
+
+{% load static %}
+
+{% block content %}
+<body style="background-image: url('{% static 'assets/images/course-03.jpg' %}'); background-size: cover; background-position: center; background-attachment: fixed;">
+    <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Poppins', Arial, sans-serif;">
+        <div style="background-color: #fff; border-radius: 10px; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); width: 80%; max-width: 600px; padding: 20px; margin-top: 50px;">
+            <h2 style="text-align: center; color: #333; margin-bottom: 20px;">Completed Tasks</h2>
+            
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                {% for task in tasks %}
+                    <div style="background-color: #f9f9f9; border-radius: 8px; padding: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                        <h4 style="color: #333; font-size: 1.3em; font-weight: bold;">{{ task.title }}</h4>
+                        <p style="color: #f39c12; font-weight: bold; margin-bottom: 10px;">Status: {{ task.status|title }}</p>
+                        
+                        <div style="font-size: 1.1em; font-weight: bold; color: #2c3e50; margin-bottom: 10px;">
+                            Task Description:
+                        </div>
+                        <div style="margin-bottom: 15px; font-size: 1em; color: #7f8c8d;">
+                            {% for line in task.description.splitlines %}
+                                <label style="display: block; margin-bottom: 5px; font-size: 1rem;">
+                                    <input type="checkbox" style="margin-right: 10px;" disabled checked>
+                                    {{ line }}
+                                </label>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Delete Button -->
+                        <a href="{% url 'delete_task' task.id %}" style="color: #e74c3c; font-weight: bold; text-decoration: none; margin-top: 10px; display: inline-block; transition: color 0.3s;">
+                            🗑️ Delete Task
+                        </a>
+                    </div>
+                {% empty %}
+                    <p style="text-align: center; color: #888;">No completed tasks available.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* General body styling */
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Task Card Styles */
+        div[style*="box-shadow"] {
+            position: relative;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        div[style*="box-shadow"]:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Delete Button */
+        a[href*="delete_task"] {
+            color: #e74c3c;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        a[href*="delete_task"]:hover {
+            color: #c0392b;
+        }
+
+        /* Task Description Checkbox Styles */
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
+    </style>
+</body>
+{% endblock %}

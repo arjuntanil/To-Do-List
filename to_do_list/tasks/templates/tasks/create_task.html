@@ -1,0 +1,93 @@
+{% extends 'tasks/base.html' %}
+{% load static %}
+{% block content %}
+<body style="background-image: url('{% static 'assets/images/banner-item-01.jpg' %}'); background-size: cover; background-position: center; background-attachment: fixed;">
+
+<div style="max-width: 800px; margin: auto; padding: 20px; font-family: Arial, sans-serif;">
+    <h2 style="text-align: center; color: white;">Create a New Task</h2>
+    <form method="POST" action="{% url 'create_task' %}" style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        {% csrf_token %}
+        <label for="title" style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">Task Title:</label>
+        <input type="text" id="title" name="title" required style="width: 100%; padding: 8px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #ddd;">
+        
+        <label for="description" style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">Description:</label>
+        <textarea id="description" name="description" required style="width: 100%; padding: 8px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #ddd;"></textarea>
+        
+        <label for="status" style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">Status:</label>
+        <select id="status" name="status" style="width: 100%; padding: 8px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #ddd;">
+            <option value="todo">To-Do</option>
+            
+        </select>
+        
+        <button type="submit" style="background-color: #5cb85c; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px;">Create Task</button>
+    </form>
+
+    <!-- Link to Completed Tasks Page -->
+    <div style="margin-top: 20px; text-align: center;">
+        <a href="{% url 'todo_tasks' %}" style="color: #3498db; text-decoration: none; font-weight: bold;">View todo Tasks</a>
+    </div>
+    
+    <h3 style="margin-top: 30px; text-align: center; color: white;">Your Tasks</h3>
+    <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 20px;">
+        {% for task in tasks %}
+            <div style="background-color: #fff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); width: 48%; padding: 15px; position: relative;">
+                <h4 style="color: #333;">{{ task.title }}</h4>
+                <p style="color: #666; white-space: pre-wrap; word-wrap: break-word;">{{ task.description }}</p>
+                <p style="color: {% if task.status == 'completed' %}green{% else %}orange{% endif %}; font-weight: bold;">
+                    Status: {{ task.status|title }}
+                </p>
+                <button onclick="openEditModal('{{ task.id }}', '{{ task.title|urlencode }}', '{{ task.description|urlencode }}', '{{ task.status }}')" 
+                    style="background-color: #3498db; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-top: 10px;">
+                    Edit Task
+                </button>
+            </div>
+        {% empty %}
+            <p style="text-align: center; color: #888;">No tasks available.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Edit Task Modal -->
+<div id="editTaskModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); border-radius: 8px; z-index: 1000;">
+    <h3>Edit Task</h3>
+    <form id="editTaskForm" method="post" action="{% url 'edit_task' 0 %}">
+        {% csrf_token %}
+        <input type="hidden" name="task_id" id="task_id">
+        
+        <label for="edit_title">Title:</label>
+        <input type="text" name="title" id="edit_title" required style="width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ddd;">
+        
+        <label for="edit_description">Description:</label>
+        <textarea name="description" id="edit_description" required style="width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ddd;"></textarea>
+        
+        <label for="edit_status">Status:</label>
+        <select name="status" id="edit_status" style="width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ddd;">
+            <option value="todo">To-Do</option>
+            <option value="completed">Completed</option>
+        </select>
+        
+        <button type="submit" style="background-color: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Save Changes</button>
+        <button type="button" onclick="closeEditModal()" style="background-color: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Cancel</button>
+    </form>
+</div>
+
+<!-- Overlay Background for Modal -->
+<div id="modalOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;" onclick="closeEditModal()"></div>
+
+<script>
+    function openEditModal(taskId, title, description, status) {
+        document.getElementById('task_id').value = taskId;
+        document.getElementById('edit_title').value = decodeURIComponent(title.replace(/\+/g, ' '));
+        document.getElementById('edit_description').value = decodeURIComponent(description.replace(/\+/g, ' '));
+        document.getElementById('edit_status').value = status;
+        
+        document.getElementById('editTaskModal').style.display = 'block';
+        document.getElementById('modalOverlay').style.display = 'block';
+    }
+
+    function closeEditModal() {
+        document.getElementById('editTaskModal').style.display = 'none';
+        document.getElementById('modalOverlay').style.display = 'none';
+    }
+</script>
+{% endblock %}
