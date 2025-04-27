@@ -1,6 +1,6 @@
-# ANY.DO - Task Management Application
+# To-Do-List - Task Management Application
 
-ANY.DO is a robust task management system built with Django that helps users organize and track their tasks efficiently. The application provides features for task creation, management, completion tracking, and user feedback.
+To-Do-List is a robust task management system built with Django that helps users organize and track their tasks efficiently. The application provides features for task creation, management, completion tracking, and user feedback.
 
 ## Features
 
